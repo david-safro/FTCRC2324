@@ -9,14 +9,14 @@ public class FieldCentricTeleOp extends OpMode {
     private RobotHardware robot;
     private PIDController pidController;
     private ElapsedTime runtime = new ElapsedTime();
-    private boolean fieldCentric = true; // Default control mode
-    private boolean lastAButtonState = false; // Last state of the 'A' button
+    private boolean fieldCentric = true;
+    private boolean lastAButtonState = false; 
 
     @Override
     public void init() {
         robot = new RobotHardware(hardwareMap);
         pidController = new PIDController(0.1, 0.01, 0.001);
-        pidController.setTarget(0.0); // Set your target heading here
+        pidController.setTarget(0.0);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class FieldCentricTeleOp extends OpMode {
         double error = robot.calculateHeadingError(pidController.getTarget());
         double pidPower = pidController.calculate(error, runtime.seconds());
 
-        // Check for 'A' button press to toggle control mode
+
         if (gamepad1.a && !lastAButtonState) {
             fieldCentric = !fieldCentric;
         }
