@@ -1,0 +1,9 @@
+1 Start = Initilize
+2 Start = Plane initilize
+2x = claw close
+2b = claw open
+2RS = down arm
+2LS = up arm
+1x = rot claw for down
+1b = rot claw for up
+2LB + 2RB = Launch Plane
