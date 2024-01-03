@@ -30,7 +30,7 @@ public class ArmFunctions {
     public void planeLaunch(boolean GP2START, boolean GP2LB, boolean GP2RB) {
         PLpos = planeLauncher.getPosition();
         if (GP2START) {
-            planeLauncher.setPosition(0.5); // initial
+            planeLauncher.setPosition(0.6); // initial
         } else if (GP2RB && GP2LB) {
             planeLauncher.setPosition(0.1); // launched
         }
@@ -61,9 +61,9 @@ public class ArmFunctions {
     public void claw(boolean gamepad2x, boolean gamepad2b) {
         clawPos = clawServo.getPosition();
         if (gamepad2x) {
-            clawServo.setPosition(0.27); // close - 0.3
+            clawServo.setPosition(0.27); // close
         } else if (gamepad2b) {
-            clawServo.setPosition(0.1); // open - 0.1
+            clawServo.setPosition(0.1); // open
         }
         clawPos = clawServo.getPosition();
     }

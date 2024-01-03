@@ -20,7 +20,7 @@ public class MecanumTeleOp extends OpMode {
     public void loop() {
 
         double forward = -gamepad1.left_stick_y;
-        double strafe = gamepad1.left_stick_x;
+        double strafe = -gamepad1.left_stick_x;
         double rotation = gamepad1.right_stick_x;
         if (gamepad1.a) {
             if(!isButtonA) {
