@@ -16,7 +16,6 @@ public class MecanumTeleOp extends OpMode {
     boolean isButtonA = false;
     public double speedMult;
     @Override
-
     public void loop() {
 
         double forward = -gamepad1.left_stick_y;
