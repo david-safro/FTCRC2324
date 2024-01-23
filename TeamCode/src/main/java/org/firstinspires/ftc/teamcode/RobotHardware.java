@@ -24,7 +24,7 @@ public class RobotHardware {
 
     public void toggleSpeed() {
         if (speedMult == 1) {
-            speedMult = 0.5;
+            speedMult = 0.4;
         } else {
             speedMult = 1;
         }
