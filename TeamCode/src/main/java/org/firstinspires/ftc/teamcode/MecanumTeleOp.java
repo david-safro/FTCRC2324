@@ -13,7 +13,7 @@ public class MecanumTeleOp extends OpMode {
         functions = new ArmFunctions(hardwareMap);
         functions.initilize();
     }
-    boolean isButtonA, isButton2B, isButton2RS, isButton2X = false;
+    boolean isButtonA, isButton2B, isButton2RS, isButton2X, togglePlane, lastGP2START = false;
     double speedMult = 1;
     @Override
     public void loop() {
@@ -39,7 +39,9 @@ public class MecanumTeleOp extends OpMode {
         functions.claw(gamepad2.a, gamepad2.b);
         functions.clawRot(gamepad2.x, gamepad2.y);
         functions.armMotor(gamepad2.right_stick_button, gamepad2.left_stick_button);
-        functions.planeLaunch(gamepad2.start, gamepad2.left_bumper, gamepad2.right_bumper);
+        functions.planeLaunchV2(gamepad2.start, togglePlane, lastGP2START);
+        functions.lifter(gamepad1.y, gamepad1.a, gamepad1.b, gamepad1.x);
+        telemetry.addData("lifterPos", functions.lifterPos);
         telemetry.addData("PlaneServoPos", functions.PLpos);
         telemetry.addData("clawPos", functions.clawPos);
         telemetry.addData("clawRotPos", functions.clawRotPos);
