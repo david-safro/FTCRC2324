@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
 
+import android.util.Pair;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -25,6 +27,8 @@ public class ArmFunctions {
 
     double clawPos;
     double clawRotPos;
+    boolean testing;
+    double servopos;
     double lifterPos;
     int armMotorPos;
     double PLpos;
@@ -103,20 +107,37 @@ public class ArmFunctions {
         }
     }
     public void leftClaw(boolean GP2X, boolean toggleLeftClaw, boolean lastGP2X) {
-        if (GP2X != lastGP2X) {
+        if (GP2X == true && lastGP2X == false) {
             toggleLeftClaw = !toggleLeftClaw;
             double leftClawNewPosition = toggleLeftClaw ? 0.1 : 0.15; // open : close
             leftClaw.setPosition(leftClawNewPosition);
             lastGP2X = GP2X;
         }
     }
-    public void clawRot(boolean GP2A, boolean lastGP2A, boolean toggleClawRot) {
+    /*public boolean clawRot(boolean GP2A, boolean lastGP2A, boolean toggleClawRot) {
         if (GP2A != lastGP2A) {
-            toggleClawRot = !toggleClawRot;
-            double clawRotNewPosition = toggleClawRot ? 0.5 : 0.7; // down : up
-            armRotServo.setPosition(clawRotNewPosition);
+            //toggleClawRot = !toggleClawRot;
+            //double clawRotNewPosition = toggleClawRot ? 0.5 : 0.7; // down : up
+            //armRotServo.setPosition(clawRotNewPosition);
             lastGP2A = GP2A;
         }
+        testing = lastGP2A;
+        return lastGP2A;
+    }*/
+    public Pair<Boolean, Boolean> clawRot(boolean GP2A, boolean lastGP2A, boolean clawRotCheck) {
+        if (GP2A && !clawRotCheck) {
+            if (!lastGP2A) {
+                armRotServo.setPosition(0.486); // down
+                lastGP2A = true;
+                clawRotCheck = false;
+            } else {
+                armRotServo.setPosition(0.9); // up
+                lastGP2A = false;
+                clawRotCheck = false;
+            }
+        }
+        servopos = armRotServo.getPosition();
+        return new Pair<Boolean, Boolean>(clawRotCheck, lastGP2A);
     }
     /*public void claw(boolean GP2B, boolean isButton2B) {
         if (GP2B) {
