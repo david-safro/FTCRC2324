@@ -28,13 +28,13 @@ import java.util.List;
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 2000;
-    public static double WHEEL_RADIUS = 2; // in
+    public static double WHEEL_RADIUS = 0.944882; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 16; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 7; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 14.48; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = -7; // in; offset of the lateral wheel
 
-    private Encoder leftEncoder, rightEncoder, frontEncoder;
+    private Encoder leftRear, rightRear, backEncoder;
 
     private List<Integer> lastEncPositions, lastEncVels;
 
@@ -48,10 +48,11 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         lastEncPositions = lastTrackingEncPositions;
         lastEncVels = lastTrackingEncVels;
 
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftEncoder"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rightEncoder"));
-        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontEncoder"));
-
+        leftRear = new Encoder(hardwareMap.get(DcMotorEx.class, "leftRear"));
+        rightRear = new Encoder(hardwareMap.get(DcMotorEx.class, "rightRear"));
+        backEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backEncoder"));
+        leftRear.setDirection(Encoder.Direction.REVERSE);
+        rightRear.setDirection(Encoder.Direction.REVERSE);
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }
 
@@ -62,9 +63,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        int leftPos = leftEncoder.getCurrentPosition();
-        int rightPos = rightEncoder.getCurrentPosition();
-        int frontPos = frontEncoder.getCurrentPosition();
+        int leftPos = leftRear.getCurrentPosition();
+        int rightPos = rightRear.getCurrentPosition();
+        int frontPos = backEncoder.getCurrentPosition();
 
         lastEncPositions.clear();
         lastEncPositions.add(leftPos);
@@ -81,9 +82,9 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     @NonNull
     @Override
     public List<Double> getWheelVelocities() {
-        int leftVel = (int) leftEncoder.getCorrectedVelocity();
-        int rightVel = (int) rightEncoder.getCorrectedVelocity();
-        int frontVel = (int) frontEncoder.getCorrectedVelocity();
+        int leftVel = (int) leftRear.getCorrectedVelocity();
+        int rightVel = (int) rightRear.getCorrectedVelocity();
+        int frontVel = (int) backEncoder.getCorrectedVelocity();
 
         lastEncVels.clear();
         lastEncVels.add(leftVel);

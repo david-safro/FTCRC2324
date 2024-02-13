@@ -6,10 +6,10 @@ import android.util.Pair;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 public class ArmFunctions {
-    boolean saveState = false;
     private DcMotorEx armMotor, lifter;
     private Servo armRotServo, leftClaw, rightClaw, planeLauncher;
 
@@ -22,39 +22,30 @@ public class ArmFunctions {
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         //planeLauncher = hardwareMap.get(Servo.class, "planeLauncher");
         lifter = hardwareMap.get(DcMotorEx.class, "lifter");
-        this.saveState = saveState;
+        planeLauncher = hardwareMap.get(Servo.class, "planeLauncher");
     }
-
     double clawPos;
     double clawRotPos;
-    boolean testing;
+    boolean toggleClawRot;
     double servopos;
     double lifterPos;
     int armMotorPos;
+    int target;
     double PLpos;
 
-    public void setup(boolean gp1start) {
-        if (gp1start) {
-            armRotServo.setPosition(0.486);
+    public void initilize() {
+        planeLauncher.setPosition(0.4);
+        armRotServo.setPosition(0.62);
+        rightClaw.setPosition(0.98);
+        leftClaw.setPosition(0.02);
+    }
+    public void planeLaunch(boolean togglePlane) {
+        if (togglePlane) {
+            planeLauncher.setPosition(0.4);
+        } else {
+            planeLauncher.setPosition(0.8);
         }
     }
-    public void initilize() {planeLauncher.setPosition(0.4);}
-    /*public void planeLaunch(boolean GP2START, boolean GP2LB) {
-        PLpos = planeLauncher.getPosition();
-        if (GP2START) {
-            planeLauncher.setPosition(0.4); // initial
-        } else if (GP2LB) {
-            planeLauncher.setPosition(0.8); // launched
-        }
-    }*/
-    /*public void planeLaunchV2(boolean GP2START, boolean togglePlane, boolean lastGP2START) {
-        if (GP2START != lastGP2START) {
-            togglePlane = !togglePlane;
-            double newPosition = togglePlane ? 0.4 : 0.8;
-            planeLauncher.setPosition(newPosition);
-            lastGP2START = GP2START;
-        }
-    }*/
     /*public void clawRot(boolean gamepad2x, boolean gamepad2y) {
         if (gamepad2x) {
             armRotServo.setPosition(0.486); // down
@@ -63,18 +54,23 @@ public class ArmFunctions {
         }
         clawRotPos = armRotServo.getPosition();
     }*/
-
-    public void armMotor(boolean GP2RS, boolean GP2LS) {
-        if (GP2RS) {
-            armMotor.setTargetPosition(1100);
+    public void armMotor(boolean toggleArm) {
+        if (toggleArm) {
+            armMotor.setTargetPosition(350);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armMotor.setPower(0.3);
-            armRotServo.setPosition(0.9); // up
-        } else if (GP2LS) {
+            armMotor.setPower(0.5);
+            armRotServo.setPosition(0.6); // up
+        } else {
             armMotor.setTargetPosition(20);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armMotor.setPower(0.3);
-            armRotServo.setPosition(0.486); // down
+            armRotServo.setPosition(0.6); // down
+        }
+    }
+    public void fixes(boolean GP2RS) {
+        if (GP2RS) {
+            armMotor.setTargetPosition(0);
+            armRotServo.setPosition(0.58);
         }
     }
     public void lifter(boolean GP1Y, boolean GP1A, boolean GP1B, boolean GP1X) {
@@ -98,20 +94,26 @@ public class ArmFunctions {
             lifter.setPower(0.4);
         }
     }
-    public void rightClaw(boolean GP2B, boolean toggleRightClaw, boolean lastGP2B) {
-        if (GP2B != lastGP2B) {
-            toggleRightClaw = !toggleRightClaw;
-            double rightClawNewPosition = toggleRightClaw ? 0.1 : 0.15; // open : close
-            rightClaw.setPosition(rightClawNewPosition);
-            lastGP2B = GP2B;
+    public void rightClaw(boolean toggleRightClaw) {
+        if (toggleRightClaw) {
+            rightClaw.setPosition(0.98);
+        } else {
+            rightClaw.setPosition(0.8);
         }
     }
-    public void leftClaw(boolean GP2X, boolean toggleLeftClaw, boolean lastGP2X) {
+    /*public void leftClaw(boolean GP2X, boolean toggleLeftClaw, boolean lastGP2X) {
         if (GP2X == true && lastGP2X == false) {
             toggleLeftClaw = !toggleLeftClaw;
             double leftClawNewPosition = toggleLeftClaw ? 0.1 : 0.15; // open : close
             leftClaw.setPosition(leftClawNewPosition);
             lastGP2X = GP2X;
+        }
+    }*/
+    public void leftClaw(boolean toggleLeftClaw) {
+        if (toggleLeftClaw) {
+            leftClaw.setPosition(0.02);
+        } else {
+            leftClaw.setPosition(0.2);
         }
     }
     /*public boolean clawRot(boolean GP2A, boolean lastGP2A, boolean toggleClawRot) {
@@ -124,20 +126,25 @@ public class ArmFunctions {
         testing = lastGP2A;
         return lastGP2A;
     }*/
-    public Pair<Boolean, Boolean> clawRot(boolean GP2A, boolean lastGP2A, boolean clawRotCheck) {
-        if (GP2A && !clawRotCheck) {
-            if (!lastGP2A) {
+    /*public Pair<Boolean, Boolean> clawRot(boolean GP2A, boolean lastGP2A, boolean clawRotCheck) {
+        if (!lastGP2A && GP2A) {
+            if (clawRotCheck) {
                 armRotServo.setPosition(0.486); // down
-                lastGP2A = true;
                 clawRotCheck = false;
             } else {
                 armRotServo.setPosition(0.9); // up
-                lastGP2A = false;
-                clawRotCheck = false;
+                clawRotCheck = true;
             }
         }
         servopos = armRotServo.getPosition();
-        return new Pair<Boolean, Boolean>(clawRotCheck, lastGP2A);
+        return new Pair<Boolean, Boolean>(clawRotCheck, GP2A);
+    }*/
+    public void clawRotation(boolean toggleClawRot) {
+        if (toggleClawRot) {
+            armRotServo.setPosition(0.62);
+        } else {
+            armRotServo.setPosition(0.9);
+        }
     }
     /*public void claw(boolean GP2B, boolean isButton2B) {
         if (GP2B) {
