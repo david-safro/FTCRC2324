@@ -15,7 +15,6 @@ public class ArmFunctions {
         armRotServo = hardwareMap.get(Servo.class, "armRotServo");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        //planeLauncher = hardwareMap.get(Servo.class, "planeLauncher");
         lifter = hardwareMap.get(DcMotorEx.class, "lifter");
         planeLauncher = hardwareMap.get(Servo.class, "planeLauncher");
     }

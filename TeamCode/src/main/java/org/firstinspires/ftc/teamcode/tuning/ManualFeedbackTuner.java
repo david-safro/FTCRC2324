@@ -22,7 +22,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
                     throw new RuntimeException("Odometry wheel locations not set! Run AngularRampLogger to tune them.");
                 }
             } else if (drive.localizer instanceof ThreeDeadWheelLocalizer) {
-                if (ThreeDeadWheelLocalizer.PARAMS.perpXTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.par0YTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.par1YTicks == 1) {
+                if (ThreeDeadWheelLocalizer.PARAMS.backEncoderXTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.leftRearYTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.rightRearYTicks == 1) {
                     throw new RuntimeException("Odometry wheel locations not set! Run AngularRampLogger to tune them.");
                 }
             }
@@ -43,7 +43,7 @@ public final class ManualFeedbackTuner extends LinearOpMode {
                     throw new RuntimeException("Odometry wheel locations not set! Run AngularRampLogger to tune them.");
                 }
             } else if (drive.localizer instanceof ThreeDeadWheelLocalizer) {
-                if (ThreeDeadWheelLocalizer.PARAMS.perpXTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.par0YTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.par1YTicks == 1) {
+                if (ThreeDeadWheelLocalizer.PARAMS.backEncoderXTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.leftRearYTicks == 0 && ThreeDeadWheelLocalizer.PARAMS.rightRearYTicks == 1) {
                     throw new RuntimeException("Odometry wheel locations not set! Run AngularRampLogger to tune them.");
                 }
             }

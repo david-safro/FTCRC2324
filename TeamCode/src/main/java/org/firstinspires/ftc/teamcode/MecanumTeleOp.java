@@ -72,7 +72,6 @@ public class MecanumTeleOp extends OpMode {
     }
 
     boolean isButton1BACK, togglePlane, toggleArm, toggleClawRot, lastGP2X, toggleLeftClaw, toggleRightClaw, lastGP2A, lastGP2B = false;
-    Pair<Boolean, Boolean> clawRotSaveState = new Pair<Boolean, Boolean>(toggleClawRot, lastGP2A);
     double speedMult = 1;
     @Override
     public void loop() {
@@ -82,7 +81,7 @@ public class MecanumTeleOp extends OpMode {
         currentGamepad1.copy(gamepad1);
         currentGamepad2.copy(gamepad2);
 
-        double forward = -gamepad1.left_stick_y;
+        double forward = gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
         double rotation = gamepad1.right_stick_x;
         if (gamepad1.back) {
@@ -98,7 +97,7 @@ public class MecanumTeleOp extends OpMode {
         } else {
             isButton1BACK = false;
         }
-        robot.setMotorPowers(strafe * speedMult, forward * speedMult, rotation * 0.8 * speedMult);
+        robot.setMotorPowers(forward * speedMult, strafe * speedMult, rotation * 0.8 * speedMult);
         //clawRotSaveState = functions.clawRot(gamepad2.a, clawRotSaveState.first, clawRotSaveState.second);
         //functions.clawRot(currentGamepad2.a, previousGamepad2.a, functions.toggleClawRot);
         clawRot();

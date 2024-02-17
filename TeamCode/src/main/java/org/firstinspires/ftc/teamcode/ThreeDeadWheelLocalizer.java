@@ -17,33 +17,35 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static class Params {
-        public double par0YTicks = 0.0; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = 1.0; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
+        public double leftRearYTicks = 0.0; // y position of the first parallel encoder (in tick units)
+        public double rightRearYTicks = 1.0; // y position of the second parallel encoder (in tick units)
+        public double backEncoderXTicks = 0.0; // x position of the backEncoderendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
 
-    public final Encoder par0, par1, perp;
+    public final Encoder leftRear, rightRear, backEncoder;
 
     public final double inPerTick;
 
-    private int lastPar0Pos, lastPar1Pos, lastPerpPos;
+    private int lastleftRearPos, lastrightRearPos, lastbackEncoderPos;
 
     public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
-        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par0")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par1")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
+        leftRear = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "leftRear")));
+        rightRear = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "rightRear")));
+        backEncoder = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "backEncoder")));
 
         // TODO: reverse encoder directions if needed
-        //   par0.setDirection(DcMotorSimple.Direction.REVERSE);
+        //   leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        lastPar0Pos = par0.getPositionAndVelocity().position;
-        lastPar1Pos = par1.getPositionAndVelocity().position;
-        lastPerpPos = perp.getPositionAndVelocity().position;
+        lastleftRearPos = leftRear.getPositionAndVelocity().position;
+        lastrightRearPos = rightRear.getPositionAndVelocity().position;
+        lastbackEncoderPos = backEncoder.getPositionAndVelocity().position;
 
         this.inPerTick = inPerTick;
 
@@ -51,34 +53,34 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
     }
 
     public Twist2dDual<Time> update() {
-        PositionVelocityPair par0PosVel = par0.getPositionAndVelocity();
-        PositionVelocityPair par1PosVel = par1.getPositionAndVelocity();
-        PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
+        PositionVelocityPair leftRearPosVel = leftRear.getPositionAndVelocity();
+        PositionVelocityPair rightRearPosVel = rightRear.getPositionAndVelocity();
+        PositionVelocityPair backEncoderPosVel = backEncoder.getPositionAndVelocity();
 
-        int par0PosDelta = par0PosVel.position - lastPar0Pos;
-        int par1PosDelta = par1PosVel.position - lastPar1Pos;
-        int perpPosDelta = perpPosVel.position - lastPerpPos;
+        int leftRearPosDelta = leftRearPosVel.position - lastleftRearPos;
+        int rightRearPosDelta = rightRearPosVel.position - lastrightRearPos;
+        int backEncoderPosDelta = backEncoderPosVel.position - lastbackEncoderPos;
 
         Twist2dDual<Time> twist = new Twist2dDual<>(
                 new Vector2dDual<>(
                         new DualNum<Time>(new double[] {
-                                (PARAMS.par0YTicks * par1PosDelta - PARAMS.par1YTicks * par0PosDelta) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
-                                (PARAMS.par0YTicks * par1PosVel.velocity - PARAMS.par1YTicks * par0PosVel.velocity) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
+                                (PARAMS.leftRearYTicks * rightRearPosDelta - PARAMS.rightRearYTicks * leftRearPosDelta) / (PARAMS.leftRearYTicks - PARAMS.rightRearYTicks),
+                                (PARAMS.leftRearYTicks * rightRearPosVel.velocity - PARAMS.rightRearYTicks * leftRearPosVel.velocity) / (PARAMS.leftRearYTicks - PARAMS.rightRearYTicks),
                         }).times(inPerTick),
                         new DualNum<Time>(new double[] {
-                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks) * (par1PosDelta - par0PosDelta) + perpPosDelta),
-                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks) * (par1PosVel.velocity - par0PosVel.velocity) + perpPosVel.velocity),
+                                (PARAMS.backEncoderXTicks / (PARAMS.leftRearYTicks - PARAMS.rightRearYTicks) * (rightRearPosDelta - leftRearPosDelta) + backEncoderPosDelta),
+                                (PARAMS.backEncoderXTicks / (PARAMS.leftRearYTicks - PARAMS.rightRearYTicks) * (rightRearPosVel.velocity - leftRearPosVel.velocity) + backEncoderPosVel.velocity),
                         }).times(inPerTick)
                 ),
                 new DualNum<>(new double[] {
-                        (par0PosDelta - par1PosDelta) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
-                        (par0PosVel.velocity - par1PosVel.velocity) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
+                        (leftRearPosDelta - rightRearPosDelta) / (PARAMS.leftRearYTicks - PARAMS.rightRearYTicks),
+                        (leftRearPosVel.velocity - rightRearPosVel.velocity) / (PARAMS.leftRearYTicks - PARAMS.rightRearYTicks),
                 })
         );
 
-        lastPar0Pos = par0PosVel.position;
-        lastPar1Pos = par1PosVel.position;
-        lastPerpPos = perpPosVel.position;
+        lastleftRearPos = leftRearPosVel.position;
+        lastrightRearPos = rightRearPosVel.position;
+        lastbackEncoderPos = backEncoderPosVel.position;
 
         return twist;
     }

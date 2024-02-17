@@ -31,17 +31,19 @@ public class RobotHardware {
     }
 
     public void setMotorPowers(double forward, double strafe, double rotation) {
+        double y = -forward;
+        double x = strafe * 1.1;
+        double rx = rotation;
 
-        double powerdenom = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotation), 1);
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
 
-        double frontLeftPower = (forward + strafe + rotation) / powerdenom;
-        double backLeftPower = (forward - strafe + rotation) / powerdenom;
-        double frontRightPower = (forward - strafe - rotation) / powerdenom;
-        double backRightPower = (forward + strafe - rotation) / powerdenom;
-
-        leftFront.setPower(frontLeftPower * speedMult);
-        leftRear.setPower(backLeftPower * speedMult);
-        rightFront.setPower(frontRightPower * speedMult);
-        rightRear.setPower(backRightPower * speedMult);
+        leftFront.setPower(frontLeftPower);
+        leftRear.setPower(backLeftPower);
+        rightFront.setPower(frontRightPower);
+        rightRear.setPower(backRightPower);
     }
 }
