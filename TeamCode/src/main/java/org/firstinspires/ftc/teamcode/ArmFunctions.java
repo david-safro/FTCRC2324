@@ -119,7 +119,7 @@ public class ArmFunctions {
     /*public boolean clawRot(boolean GP2A, boolean lastGP2A, boolean toggleClawRot) {
         if (GP2A != lastGP2A) {
             //toggleClawRot = !toggleClawRot;
-            //double clawRotNewPosition = toggleClawRot ? 0.5 : 0.7; // down : up
+            //double clawRotNewPosition = toggleClawRot ? 0.5 : 0.62; // down : up
             //armRotServo.setPosition(clawRotNewPosition);
             lastGP2A = GP2A;
         }
@@ -141,9 +141,9 @@ public class ArmFunctions {
     }*/
     public void clawRotation(boolean toggleClawRot) {
         if (toggleClawRot) {
-            armRotServo.setPosition(0.62);
+            armRotServo.setPosition(0.6); // down
         } else {
-            armRotServo.setPosition(0.9);
+            armRotServo.setPosition(0.9); // up
         }
     }
     /*public void claw(boolean GP2B, boolean isButton2B) {

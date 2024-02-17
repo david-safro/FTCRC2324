@@ -16,6 +16,8 @@ public class RobotHardware {
         leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     double speedMult = 1;
@@ -37,9 +39,9 @@ public class RobotHardware {
         double frontRightPower = (forward - strafe - rotation) / powerdenom;
         double backRightPower = (forward + strafe - rotation) / powerdenom;
 
-        leftFront.setPower(frontLeftPower * speedMult);
-        leftRear.setPower(backLeftPower * speedMult);
-        rightFront.setPower(frontRightPower * speedMult);
-        rightRear.setPower(backRightPower * speedMult);
+        leftFront.setPower(frontLeftPower);
+        leftRear.setPower(backLeftPower);
+        rightFront.setPower(frontRightPower);
+        rightRear.setPower(backRightPower);
     }
 }

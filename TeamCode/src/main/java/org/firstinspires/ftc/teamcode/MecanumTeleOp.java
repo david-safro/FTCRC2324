@@ -98,7 +98,7 @@ public class MecanumTeleOp extends OpMode {
         } else {
             isButton1BACK = false;
         }
-        robot.setMotorPowers(forward * speedMult, strafe * speedMult, rotation * 0.8 * speedMult);
+        robot.setMotorPowers(forward * speedMult, strafe * speedMult, rotation * speedMult);
         //clawRotSaveState = functions.clawRot(gamepad2.a, clawRotSaveState.first, clawRotSaveState.second);
         //functions.clawRot(currentGamepad2.a, previousGamepad2.a, functions.toggleClawRot);
         clawRot();
