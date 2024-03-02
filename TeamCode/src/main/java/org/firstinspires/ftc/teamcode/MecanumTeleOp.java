@@ -68,10 +68,14 @@ public class MecanumTeleOp extends OpMode {
     public void init() {
         robot = new RobotHardware(hardwareMap);
         functions = new ArmFunctions(hardwareMap);
-        functions.initilize();
+        try {
+            functions.initilize();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    boolean isButton1BACK, togglePlane, toggleArm, toggleClawRot, lastGP2X, toggleLeftClaw, toggleRightClaw, lastGP2A, lastGP2B = false;
+    boolean isButton1BACK, togglePlane, toggleArm, toggleClawRot, toggleLeftClaw, toggleRightClaw  = false;
     double speedMult = 1;
     @Override
     public void loop() {
@@ -81,7 +85,7 @@ public class MecanumTeleOp extends OpMode {
         currentGamepad1.copy(gamepad1);
         currentGamepad2.copy(gamepad2);
 
-        double forward = gamepad1.left_stick_y;
+        double forward = -gamepad1.left_stick_y;
         double strafe = gamepad1.left_stick_x;
         double rotation = gamepad1.right_stick_x;
         if (gamepad1.back) {
@@ -97,27 +101,25 @@ public class MecanumTeleOp extends OpMode {
         } else {
             isButton1BACK = false;
         }
-        robot.setMotorPowers(forward * speedMult, strafe * speedMult, rotation * 0.8 * speedMult);
-        //clawRotSaveState = functions.clawRot(gamepad2.a, clawRotSaveState.first, clawRotSaveState.second);
-        //functions.clawRot(currentGamepad2.a, previousGamepad2.a, functions.toggleClawRot);
+        robot.setMotorPowers(forward * speedMult, strafe * speedMult, rotation * speedMult);
         clawRot();
         leftClaw();
         planeLaunch();
         rightClaw();
         arm();
-        functions.fixes(gamepad2.right_stick_button);
+        functions.fixes(gamepad2.right_bumper, gamepad2.left_bumper);
         functions.lifter(gamepad1.y, gamepad1.a, gamepad1.b, gamepad1.x);
         telemetry.addData("lifterPos", functions.lifterPos);
         telemetry.addData("PlaneServoPos", functions.PLpos);
-        telemetry.addData("clawPos", functions.clawPos);
         telemetry.addData("clawRotPos", functions.clawRotPos);
         telemetry.addData("armMotorPos", functions.armMotorPos);
         telemetry.addData("lastGP2A", functions.toggleClawRot);
         telemetry.addData("servopos", functions.servopos);
         telemetry.addData("speedMult", speedMult);
         telemetry.addData("targetpos", functions.target);
+        telemetry.addData("rightClaw", functions.rightclawPos);
+        telemetry.addData("leftClaw", functions.leftclawPos);
         telemetry.update();
-
 
     }
 }
