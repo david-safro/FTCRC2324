@@ -36,9 +36,9 @@ public class ArmFunctions {
     public void initilize() throws InterruptedException {
         planeLauncher.setPosition(0.4);
         rightClaw.setPosition(0.71);
-        leftClaw.setPosition(0.1);
-        Thread.sleep(1000);
-        armRotServo.setPosition(0.9);
+        leftClaw.setPosition(0);
+        Thread.sleep(4000);
+        armRotServo.setPosition(0.98);
     }
     public void planeLaunch(boolean togglePlane) {
         if (togglePlane) {
@@ -53,12 +53,12 @@ public class ArmFunctions {
             armMotor.setTargetPosition(350);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armMotor.setPower(0.5);
-            armRotServo.setPosition(0.6); // up
+            armRotServo.setPosition(0.7); // up
         } else {
             armMotor.setTargetPosition(20);
             armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armMotor.setPower(0.3);
-            armRotServo.setPosition(0.58); // down
+            armRotServo.setPosition(0.66); // down
         }
     }
     public void fixes(boolean GP2RS, boolean GP2LS) {
@@ -94,28 +94,28 @@ public class ArmFunctions {
     }
     public void rightClaw(boolean toggleRightClaw) {
         if (toggleRightClaw) {
-            rightClaw.setPosition(0.4); // 0.98
+            rightClaw.setPosition(0.4); // open
             rightclawPos = rightClaw.getPosition();
         } else {
-            rightClaw.setPosition(0.75); // 0.8
+            rightClaw.setPosition(0.75); // close
             rightclawPos = rightClaw.getPosition();
         }
     }
     public void leftClaw(boolean toggleLeftClaw) {
         if (toggleLeftClaw) {
-            leftClaw.setPosition(0.05);
+            leftClaw.setPosition(0); // close
             leftclawPos = leftClaw.getPosition();
         } else {
-            leftClaw.setPosition(0.4);
+            leftClaw.setPosition(0.25); // open
             leftclawPos = leftClaw.getPosition();
         }
     }
 
     public void clawRotation(boolean toggleClawRot) {
         if (toggleClawRot) {
-            armRotServo.setPosition(0.58); // down
+            armRotServo.setPosition(0.66); // down
         } else {
-            armRotServo.setPosition(0.9); // up
+            armRotServo.setPosition(0.98); // up
         }
     }
     /*public void claw(boolean GP2B, boolean isButton2B) {
